@@ -61,6 +61,8 @@ router.post('/', (req, res, next) => {
       })
       .save()
       .then(() => {
+        // セッションにnameを保存
+        req.session.user = req.body.name;
         res.redirect('/');
       });
     }

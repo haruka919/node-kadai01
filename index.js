@@ -3,16 +3,21 @@ const app = express();
 
 const validator = require('express-validator');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+
 const indexRouter = require('./routes/index');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
+const setUser = require('./routes/setUser');
 
 // テンプレートエンジンの指定
 app.set('view engine', 'ejs');
 
 // バリデーション
 app.use(validator());
+
+app.use(cookieParser());
 
 // POSTデータを取得する時に必要
 app.use(bodyParser.json());
@@ -28,9 +33,9 @@ const session_opt = {
 app.use(session(session_opt));
 
 
-app.use('/', indexRouter);
-app.use('/login', loginRouter);
-app.use('/register', registerRouter);
+app.use('/', setUser, indexRouter);
+app.use('/login', setUser, loginRouter);
+app.use('/register', setUser, registerRouter);
 
 // routeの設定
 app.use('/', require('./routes/index.js'));
