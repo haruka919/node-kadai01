@@ -38,7 +38,7 @@ router.post('/', (req, res, next) => {
   req.check('password', 'PASSWORD は7文字以上で入力して下さい。').isLength({ min: 7 });
   req.assert('comfirm_password', '確認用の値と一致しません。').equals(req.body.password);
   req.getValidationResult().then((result) => {
-    // バリデーションに引っかかったらエラーメッセージを表示
+    // バリデーション失敗
     if (!result.isEmpty()) {
       let content = '<ul class="error">';
       let result_arr = result.array();　　// エラー内容が配列に返る
@@ -53,7 +53,16 @@ router.post('/', (req, res, next) => {
       };
       res.render('register', data);
     } else {
-      console.log('OK')
+      // バリデーション成功(ユーザー登録後、ホーム画面にリダイレクト)
+      new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+      })
+      .save()
+      .then(() => {
+        res.redirect('/');
+      });
     }
   })
 });
