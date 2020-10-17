@@ -1,4 +1,4 @@
-var router = require('express').Router();
+const router = require('express').Router();
 
 router.get('/', (req, res) => {
   // セッションに保存されていなかったらlogin画面にリダイレクト

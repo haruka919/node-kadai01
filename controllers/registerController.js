@@ -21,12 +21,12 @@ module.exports = {
       // バリデーション失敗
       if (!result.isEmpty()) {
         let content = '<ul class="error">';
-        let result_arr = result.array();　　// エラー内容が配列に返る
+        const result_arr = result.array();　　// エラー内容が配列に返る
         for (let n in result_arr) {
           content += '<li>' + result_arr[n].msg + '</li>';
         }
         content += '</ul>';
-        let data = {
+        const data = {
           title: '会員登録',
           content: content,
           form: req.body,　// nameとemailは入力したものを返す
