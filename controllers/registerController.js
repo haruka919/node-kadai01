@@ -1,3 +1,23 @@
+const { validationResult } = require('express-validator/check');
+const knex = require('knex')({
+  dialect: 'mysql',       // 使用するデータベースを指定
+  connection: {
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'node_db',
+    charset: 'utf8',
+  },
+});
+
+const BookShelf = require('bookshelf')(knex);
+
+// データベースにあるテーブルを扱うためのオブジェクトを作成
+const User = BookShelf.Model.extend({
+  hasTimestamps: true,
+  tableName: 'users',
+});
+
 module.exports = {
   // ユーザー登録画面表示
   show (req, res) {
@@ -13,15 +33,12 @@ module.exports = {
   },
   // ユーザー登録の送信処理
   create (req, res) {
-    req.check('name', 'NAME は必ず入力して下さい。').notEmpty();
-    req.check('email', 'EMAIL はメールアドレスを入力して下さい。').isEmail();
-    req.check('password', 'PASSWORD は7文字以上で入力して下さい。').isLength({ min: 7 });
-    req.assert('comfirm_password', '確認用の値と一致しません。').equals(req.body.password);
-    req.getValidationResult().then((result) => {
+    // バリデーションの結果にエラーがあるかのチェック
+      const errors = validationResult(req);
       // バリデーション失敗
-      if (!result.isEmpty()) {
+      if (!errors.isEmpty()) {
         let content = '<ul class="error">';
-        const result_arr = result.array();　　// エラー内容が配列に返る
+        const result_arr = errors.array();　　// エラー内容が配列に返る
         for (let n in result_arr) {
           content += '<li>' + result_arr[n].msg + '</li>';
         }
@@ -46,6 +63,5 @@ module.exports = {
           res.redirect('/');
         });
       }
-    })
   }
 }
