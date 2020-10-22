@@ -1,11 +1,12 @@
-var router = require('express').Router();
+const router = require('express').Router();
 
-router.get('/login', (req, res) => {
-  res.render('./login.ejs');
-});
-
-router.get('/register', (req, res) => {
-  res.render('./register.ejs');
+router.get('/', (req, res) => {
+  // セッションに保存されていなかったらlogin画面にリダイレクト
+  if (req.session.user == undefined) {
+    res.redirect('/login');
+  } else {
+    res.render('./index.ejs');
+  }
 });
 
 module.exports = router;
